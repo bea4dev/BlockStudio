@@ -11,6 +11,8 @@ jobs:
         java-version: 8
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
+    - name: Set -B versions
+      run: mvn -B versions:set -DnewVersion=0.0.0-g${GITHUB_SHA} -DgenerateBackupPoms=false
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Publish to GitHub Packages Apache Maven
