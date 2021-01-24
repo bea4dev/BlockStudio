@@ -328,4 +328,25 @@ public class BlockStudioAPI {
         
         return objectData;
     }
+    
+    
+    /**
+     * Creates an ObjectData from a list of specified blocks.
+     * 指定されたブロックのリストからオブジェクトデータを生成します
+     * @param dataName Object data name.
+     * @param baseLocation Base location
+     * @param blocks Block list to convert ObjectData.
+     * @return ObjectData Created object data.
+     */
+    public ObjectData createObjectDataFromBlocks(String dataName, Location baseLocation, List<Block> blocks){
+        ObjectData objectData = new ObjectData(dataName);
+        objectData.loadFile();
+        
+        objectData.setCubeDataList(BSUtil.createCubeDataListFromBlocks(baseLocation, blocks));
+        
+        objectDataList.add(objectData);
+        objectDataMap.put(dataName, objectData);
+        
+        return objectData;
+    }
 }
