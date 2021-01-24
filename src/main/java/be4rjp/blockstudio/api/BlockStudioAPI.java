@@ -131,6 +131,47 @@ public class BlockStudioAPI {
     
     
     /**
+     * Creates an object from a list of specified blocks.
+     * 指定されたブロックのリストからオブジェクトを生成します
+     * @param objectName Object name.
+     * @param baseLocation Spawn a object at this location.
+     * @param blocks Block list to convert object.
+     * @param viewDistance Object drawing distance.
+     * @param useBukkitArmorStand Whether to use BukkitArmorStand.
+     *                            If you specify true for this argument,
+     *                            you will not be able to move the object asynchronously.
+     * @return BSObject Created object.
+     */
+    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, List<Block> blocks, double viewDistance, boolean useBukkitArmorStand){
+        BSObject bsObject = new BSObject(this, objectName, baseLocation, viewDistance, useBukkitArmorStand);
+        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromBlocks(baseLocation, bsObject, blocks);
+        bsObject.setBSCubeList(bsCubeList);
+        
+        objectList.add(bsObject);
+        objectMap.put(objectName, bsObject);
+        
+        return bsObject;
+    }
+    
+    
+    /**
+     * Creates an object from a list of specified blocks.
+     * 指定されたブロックのリストからオブジェクトを生成します
+     * @param objectName Object name.
+     * @param baseLocation Spawn a object at this location.
+     * @param blocks Block list to convert object.
+     * @param useBukkitArmorStand Whether to use BukkitArmorStand.
+     *                            If you specify true for this argument,
+     *                            you will not be able to move the object asynchronously.
+     * @return BSObject Created object.
+     */
+    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, List<Block> blocks, boolean useBukkitArmorStand){
+        
+        return createObjectFromBlocks(objectName, baseLocation, blocks, defaultViewDistance, useBukkitArmorStand);
+    }
+    
+    
+    /**
      * Create object from blocks in specified region.
      * 指定された範囲内にあるブロックからオブジェクトを生成します
      * @param objectName Object name.

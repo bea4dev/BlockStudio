@@ -34,8 +34,8 @@ public class BSArmorStand {
                     NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
@@ -44,9 +44,13 @@ public class BSArmorStand {
         if(this.armorStand != null){
             this.armorStand.setHelmet(itemStack);
         }else{
-            for(Player player : bsCube.getBsObject().getPlayers()) {
-                if(player == null) continue;
-                sendHelmetEquipmentPacket(player, itemStack);
+            try {
+                for (Player player : bsCube.getBsObject().getPlayers()) {
+                    if (player == null) continue;
+                    sendHelmetEquipmentPacket(player, itemStack);
+                }
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
@@ -54,8 +58,8 @@ public class BSArmorStand {
     public void sendHelmetEquipmentPacket(Player player, ItemStack itemStack){
         try{
             NMSUtil.sendEntityEquipmentPacket(player, this.entityArmorStand, itemStack);
-        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            //e.printStackTrace();
         }
     }
     
@@ -64,8 +68,8 @@ public class BSArmorStand {
             try {
                 NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
                 NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
             sendHelmetEquipmentPacket(player, bsCube.getHeadItemStack());
         }
@@ -75,8 +79,8 @@ public class BSArmorStand {
         if(this.entityArmorStand != null) {
             try{
                 NMSUtil.sendEntityDestroyPacket(player, this.entityArmorStand);
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
@@ -91,8 +95,8 @@ public class BSArmorStand {
                     if(player == null) continue;
                     NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
                 }
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
@@ -107,8 +111,8 @@ public class BSArmorStand {
                     if (player == null) continue;
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
@@ -117,9 +121,13 @@ public class BSArmorStand {
         if(this.armorStand != null){
             this.armorStand.remove();
         }else{
-            for(Player player : bsCube.getBsObject().getPlayers()){
-                if(player == null) continue;
-                sendDestroyPacket(player);
+            try {
+                for (Player player : bsCube.getBsObject().getPlayers()) {
+                    if (player == null) continue;
+                    sendDestroyPacket(player);
+                }
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }

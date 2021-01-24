@@ -60,7 +60,7 @@ public class BSObject {
      * （プレイヤーの頭に似た動きをします）
      * @param direction
      */
-    public void setZAxes(Vector direction) {
+    public void setDirection(Vector direction) {
         Vector xzVector = new Vector(direction.getX(), 0, direction.getZ());
         float xzAngle = xzVector.angle(new Vector(0, 0, 1)) * (direction.getX() >= 0 ? 1 : -1);
         this.z = direction.clone();
@@ -91,7 +91,7 @@ public class BSObject {
      * @param direction
      * @param rotation
      */
-    public void setZAxesRotation(Vector direction, double rotation) {
+    public void setDirectionRotation(Vector direction, double rotation) {
         Vector xzVector = new Vector(direction.getX(), 0, direction.getZ());
         float xzAngle = xzVector.angle(new Vector(0, 0, 1)) * (direction.getX() >= 0 ? 1 : -1);
         this.z = direction.clone();
