@@ -1,0 +1,5 @@
+name: BlockStudio
+version: ${project.version}
+main: be4rjp.blockstudio.BlockStudio
+authors: [ Be4rJP ]
+api-version: 1.13
