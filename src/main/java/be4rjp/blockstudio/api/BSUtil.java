@@ -17,7 +17,7 @@ public class BSUtil {
         List<BSCube> bsCubeList = new ArrayList<>();
     
         for(Block block : blocks){
-            if(block.getType() == Material.AIR) continue;
+            if(block.getType() == Material.AIR || block.getType() == Material.STRUCTURE_VOID) continue;
             Location bl = block.getLocation();
             Vector vector = new Vector(bl.getX() - baseLocation.getX(), bl.getY() - baseLocation.getY(), bl.getZ() - baseLocation.getZ());
             EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
@@ -33,7 +33,7 @@ public class BSUtil {
         List<String> bsCubeList = new ArrayList<>();
         
         for(Block block : blocks){
-            if(block.getType() == Material.AIR) continue;
+            if(block.getType() == Material.AIR || block.getType() == Material.STRUCTURE_VOID) continue;
             Location bl = block.getLocation();
             Vector location = new Vector(bl.getX() - baseLocation.getX(), bl.getY() - baseLocation.getY(), bl.getZ() - baseLocation.getZ());
             EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
