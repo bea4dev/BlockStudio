@@ -234,6 +234,14 @@ public class BSObject {
         try{
             bsObjectPlayerRunnable.cancel();
         }catch (Exception e){}
+        
+        if(api.hasNamedObject(name)){
+            api.getObjectMap().remove(name);
+        }
+        
+        if(api.getObjectList().contains(this)){
+            api.getObjectList().remove(this);
+        }
     }
     
     public void setBSCubeList(List<BSCube> list){this.list = list;}

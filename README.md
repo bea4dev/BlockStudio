@@ -1,8 +1,7 @@
 # BlockStudio [![wiki](https://img.shields.io/badge/API-Wiki-green)](https://github.com/Be4rJP/BlockStudio/wiki) [![release](https://img.shields.io/badge/Release-SNAPSHOT-blue)](https://github.com/Be4rJP/BlockStudio/releases)
 
-This is a plugin under development for bukkit or spigot.
-
-Currently, only API functions are available.
+It is now easier to create object data.
+Please see the [wiki](https://github.com/Be4rJP/BlockStudio/wiki) for more details.
 
 [Windmill example](https://github.com/Be4rJP/BlockStudioTest)
 

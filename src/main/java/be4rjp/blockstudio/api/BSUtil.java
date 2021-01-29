@@ -3,6 +3,7 @@ package be4rjp.blockstudio.api;
 import be4rjp.blockstudio.file.ObjectData;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -57,7 +58,7 @@ public class BSUtil {
     }
     
     
-    public static List<BSCube> createBSCubeListFromObjectData(Location baseLocation, BSObject bsObject, ObjectData objectData){
+    public static List<BSCube> createBSCubeListFromObjectData(World world, BSObject bsObject, ObjectData objectData){
         List<BSCube> bsCubeList = new ArrayList<>();
         
         for(String line : objectData.getCubeDataList()){
@@ -94,7 +95,7 @@ public class BSUtil {
             
             EulerAngle eulerAngle = new EulerAngle(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
             
-            BSCube bsCube = new BSCube(bsObject, baseLocation.getWorld(), vector, itemStack, eulerAngle);
+            BSCube bsCube = new BSCube(bsObject, world, vector, itemStack, eulerAngle);
             bsCubeList.add(bsCube);
         }
         

@@ -232,7 +232,7 @@ public class BlockStudioAPI {
                                                ObjectData objectData, double viewDistance, boolean useBukkitArmorStand){
     
         BSObject bsObject = new BSObject(this, objectName, baseLocation, viewDistance, useBukkitArmorStand);
-        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(baseLocation, bsObject, objectData);
+        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(baseLocation.getWorld(), bsObject, objectData);
         bsObject.setBSCubeList(bsCubeList);
     
         objectList.add(bsObject);
@@ -272,16 +272,18 @@ public class BlockStudioAPI {
         
         dir.mkdir();
         File[] files = dir.listFiles();
-    
-        for(File file : Arrays.asList(files)){
-            if(!file.getName().contains(".yml")) continue;
-    
-            String name = file.getName().replace(".yml", "");
-            ObjectData objectData = new ObjectData(name);
-            objectData.loadFile();
-    
-            objectDataList.add(objectData);
-            objectDataMap.put(name, objectData);
+        
+        if(files != null) {
+            for (File file : Arrays.asList(files)) {
+                if (!file.getName().contains(".yml")) continue;
+        
+                String name = file.getName().replace(".yml", "");
+                ObjectData objectData = new ObjectData(name);
+                objectData.loadFile();
+        
+                objectDataList.add(objectData);
+                objectDataMap.put(name, objectData);
+            }
         }
     }
     

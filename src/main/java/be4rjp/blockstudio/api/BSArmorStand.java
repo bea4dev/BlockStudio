@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class BSArmorStand {
     private final BSCube bsCube;
     private Location location;
@@ -31,6 +29,7 @@ public class BSArmorStand {
                 
                 for(Player player : bsCube.getBsObject().getPlayers()) {
                     if (player == null) continue;
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld())
                     NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
@@ -39,6 +38,13 @@ public class BSArmorStand {
             }
         }
     }
+    
+    
+    public ArmorStand getBukkitArmorStand() {return armorStand;}
+    
+    
+    public Object getNMSArmorStand() {return entityArmorStand;}
+    
     
     public void setHelmet(ItemStack itemStack){
         if(this.armorStand != null){

@@ -3,3 +3,17 @@ version: ${project.version}
 main: be4rjp.blockstudio.BlockStudio
 authors: [ Be4rJP ]
 api-version: 1.13
+#--------------------------------------
+commands:
+  bs:
+    description: Type /bs help
+    usage: Type /bs help
+    permission: bs.admin
+  blockstudio:
+    description: Type /blockstudio help
+    usage: Type /blockstudio help
+    permission: bs.admin
+#--------------------------------------
+permissions:
+  bs.admin:
+    description: admin command.

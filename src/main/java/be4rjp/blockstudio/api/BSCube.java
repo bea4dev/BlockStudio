@@ -40,6 +40,10 @@ public class BSCube {
     }
     
     public Location getLocation(){
+        
+        if(location.getX() == 0.0 && location.getY() == 0.0 && location.getZ() == 0.0)
+            return bsObject.getBaseLocation().clone();
+        
         Vector baseLocation = bsObject.getBaseLocation().toVector();
         Vector xLocation = baseLocation.clone().add(bsObject.getXVector().clone().multiply((location.getX() * bsObject.getBlockSize())));
         Vector yLocation = xLocation.clone().add(bsObject.getYVector().clone().multiply((location.getY() * bsObject.getBlockSize())));
@@ -87,4 +91,6 @@ public class BSCube {
     public ItemStack getHeadItemStack() {return headItemStack;}
     
     public EulerAngle getBaseEulerAngle() {return baseEulerAngle;}
+    
+    public World getWorld() {return world;}
 }

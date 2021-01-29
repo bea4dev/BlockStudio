@@ -30,6 +30,8 @@ public class ObjectData{
         }
     }
     
+    public String getDataName() {return dataName;}
+    
     public List<String> getCubeDataList(){
         return config.getStringList("cube-data");
     }
