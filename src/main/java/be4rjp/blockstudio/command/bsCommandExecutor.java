@@ -64,11 +64,6 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
     
                 BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
                 
-                if(api.hasNamedObjectData(args[1])){
-                    sender.sendMessage(ChatColor.RED + "The data with the specified name already exists.");
-                    return true;
-                }
-                
                 api.createObjectDataFromRegion(args[1], playerData.getBase(), playerData.getFirst(), playerData.getSecond());
     
                 sender.sendMessage(ChatColor.GREEN + "The data was successfully created.");

@@ -29,7 +29,7 @@ public class BSArmorStand {
                 
                 for(Player player : bsCube.getBsObject().getPlayers()) {
                     if (player == null) continue;
-                    if(player.getWorld() !=  bsCube.getLocation().getWorld())
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
                     NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
@@ -53,6 +53,7 @@ public class BSArmorStand {
             try {
                 for (Player player : bsCube.getBsObject().getPlayers()) {
                     if (player == null) continue;
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
                     sendHelmetEquipmentPacket(player, itemStack);
                 }
             } catch (Exception e) {
@@ -99,6 +100,7 @@ public class BSArmorStand {
                 NMSUtil.setEntityPositionRotation(this.entityArmorStand, location.getX(), location.getY(), location.getZ(), 0F, 0F);
                 for(Player player : bsCube.getBsObject().getPlayers()){
                     if(player == null) continue;
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
                     NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
                 }
             } catch (Exception e) {
@@ -115,6 +117,7 @@ public class BSArmorStand {
                 NMSUtil.setArmorStandHeadRotation(this.entityArmorStand, (float)Math.toDegrees(eulerAngle.getX()), (float)Math.toDegrees(eulerAngle.getY()), (float)Math.toDegrees(eulerAngle.getZ()));
                 for(Player player : bsCube.getBsObject().getPlayers()) {
                     if (player == null) continue;
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
             } catch (Exception e) {
@@ -130,6 +133,7 @@ public class BSArmorStand {
             try {
                 for (Player player : bsCube.getBsObject().getPlayers()) {
                     if (player == null) continue;
+                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
                     sendDestroyPacket(player);
                 }
             } catch (Exception e) {

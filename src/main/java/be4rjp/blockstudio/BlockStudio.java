@@ -37,6 +37,10 @@ public final class BlockStudio extends JavaPlugin {
         this.api = new BlockStudioAPI(this, config.getConfig().getInt("default-view-distance"));
         
         
+        //Load all object data
+        this.api.loadAllObjectData();
+        
+        
         //Register listeners
         getLogger().info("Registering listeners...");
         PluginManager pm = getServer().getPluginManager();
