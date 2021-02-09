@@ -64,6 +64,11 @@ public final class BlockStudio extends JavaPlugin {
             PlayerData playerData = new PlayerData(player);
             getDataStore().setPlayerData(player, playerData);
         });
+        
+        
+        //Spawn objects
+        if(config.getConfig().getBoolean("spawn-objects"))
+            this.api.spawnAllObjects();
     }
     
     @Override

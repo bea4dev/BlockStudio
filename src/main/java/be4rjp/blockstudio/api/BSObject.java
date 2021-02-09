@@ -61,6 +61,9 @@ public class BSObject {
      * @param direction
      */
     public void setDirection(Vector direction) {
+        
+        direction.normalize();
+        
         Vector xzVector = new Vector(direction.getX(), 0, direction.getZ());
         float xzAngle = xzVector.angle(new Vector(0, 0, 1)) * (direction.getX() >= 0 ? 1 : -1);
         this.z = direction.clone();
@@ -92,6 +95,9 @@ public class BSObject {
      * @param rotation
      */
     public void setDirectionRotation(Vector direction, double rotation) {
+        
+        direction.normalize();
+        
         Vector xzVector = new Vector(direction.getX(), 0, direction.getZ());
         float xzAngle = xzVector.angle(new Vector(0, 0, 1)) * (direction.getX() >= 0 ? 1 : -1);
         this.z = direction.clone();

@@ -1,1 +1,5 @@
-default-view-distance: 35
+default-view-distance: 40
+
+spawn-objects: false
+
+default-task-period: 60

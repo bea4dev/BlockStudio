@@ -19,7 +19,7 @@ public class ObjectData{
     public ObjectData(String dataName){
         this.dataName = dataName;
         this.fileName = dataName + ".yml";
-        this.file = new File("plugins/BlockStudio/Objects", fileName);
+        this.file = new File("plugins/BlockStudio/Data", fileName);
     }
     
     public int getVersion(){
@@ -40,6 +40,8 @@ public class ObjectData{
         config.set("cube-data", cubeDataList);
     }
     
+    public boolean isObjectData(){return config.contains("cube-data");}
+    
     public void loadFile(){
         file.getParentFile().mkdir();
         if(file.exists()){
@@ -52,12 +54,6 @@ public class ObjectData{
                 e.printStackTrace();
             }
         }
-        
-        if(!config.contains("cube-data")) {
-            config.set("version", CubeDataManager.version);
-            config.set("cube-data", new ArrayList<String>());
-        }
-        
     }
     
     public void saveFile(){

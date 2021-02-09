@@ -1,0 +1,13 @@
+object-data: 'example-data'
+
+location: 'world, 0, 0, 0'
+
+euler-angle: '45, 0, 0'
+
+#direction: '1, 0, 0'
+
+view-distance: 40
+
+task-period: 60
+
+animation: '/move[0.0, 0.1, 0.0],[10.0],[0] /rotation[0.5]'

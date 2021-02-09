@@ -1,6 +1,7 @@
 package be4rjp.blockstudio.api;
 
 import be4rjp.blockstudio.file.CubeDataManager;
+import be4rjp.blockstudio.file.ObjectConfig;
 import be4rjp.blockstudio.file.ObjectData;
 import be4rjp.blockstudio.region.RegionBlocks;
 import org.bukkit.Location;
@@ -261,17 +262,22 @@ public class BlockStudioAPI {
     
     
     /**
-     * Loads and creates ObjectData from all yml files in plugins/BlockStudio/Objects/.
-     * plugins/BlockStudio/Objects/に存在するすべてのymlファイルからObjectDataを読み込み作成します
+     * Loads and creates ObjectData from all yml files in plugins/BlockStudio/Data/.
+     * plugins/BlockStudio/Data/に存在するすべてのymlファイルからObjectDataを読み込み作成します
      */
     public void loadAllObjectData(){
         objectDataList.clear();
         objectDataMap.clear();
         
-        File dir = new File("plugins/BlockStudio/Objects");
+        File dir = new File("plugins/BlockStudio/Data");
         
         dir.mkdir();
         File[] files = dir.listFiles();
+    
+        if(files.length == 0){
+            plugin.saveResource("Data/example-data.yml", false);
+            files = dir.listFiles();
+        }
         
         if(files != null) {
             for (File file : Arrays.asList(files)) {
@@ -280,9 +286,42 @@ public class BlockStudioAPI {
                 String name = file.getName().replace(".yml", "");
                 ObjectData objectData = new ObjectData(name);
                 objectData.loadFile();
+                
+                if(!objectData.isObjectData()) continue;
         
                 objectDataList.add(objectData);
                 objectDataMap.put(name, objectData);
+            }
+        }
+    }
+    
+    
+    /**
+     * Loads and spawns object from all yml files in plugins/BlockStudio/Objects/.
+     * plugins/BlockStudio/Objects/に存在するすべてのymlファイルからオブジェクトを読み込み作成します
+     */
+    public void spawnAllObjects(){
+        File dir = new File("plugins/BlockStudio/Objects");
+        
+        dir.mkdir();
+        File[] files = dir.listFiles();
+        
+        if(files.length == 0){
+            plugin.saveResource("Objects/example-object.yml", false);
+            files = dir.listFiles();
+        }
+        
+        if(files != null) {
+            for (File file : Arrays.asList(files)) {
+                if (!file.getName().contains(".yml")) continue;
+                
+                String name = file.getName().replace(".yml", "");
+                ObjectConfig objectConfig = new ObjectConfig(name);
+                objectConfig.loadFile();
+                
+                if(!objectConfig.isObjectConfig()) continue;
+                
+                objectConfig.spawnObject();
             }
         }
     }
