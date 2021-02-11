@@ -1,5 +1,6 @@
 package be4rjp.blockstudio.api;
 
+import be4rjp.blockstudio.BlockStudio;
 import be4rjp.blockstudio.file.ObjectData;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BSUtil {
@@ -63,35 +65,47 @@ public class BSUtil {
         
         for(String line : objectData.getCubeDataList()){
             
-            String convert = line.replace("Material", "");
-            convert = convert.replace("ItemName", "");
-            convert = convert.replace("Relative", "");
-            convert = convert.replace("Angle", "");
-            convert = convert.replace(" ", "");
-            convert = convert.replace("{", "");
+            int mode = line.contains("ItemName") ? 0 : 1; //ItemName=0, CustomItemModel=1
             
+            String convert = line.replace("Material", "");
+            for (String s : Arrays.asList("ItemName", "CustomItemModel", "Relative", "Angle", " ", "{")) {
+                convert = convert.replace(s, "");
+            }
+    
             String[] args = convert.split("}");
             
             
             Material material = Material.getMaterial(args[0]);
-            String itemName = args[1];
+            String itemNameOrModelID = args[1];
             
+            if(material == null) continue;
             if(material == Material.AIR) continue;
-    
+            
             ItemStack itemStack = new ItemStack(material);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(itemName);
+            if(itemMeta != null) {
+                if(mode == 0) {
+                    itemMeta.setDisplayName(itemNameOrModelID);
+                }else {
+                    try {
+                        itemMeta.setCustomModelData(Integer.parseInt(itemNameOrModelID));
+                    } catch (NoSuchMethodError e) {
+                        BlockStudio.getPlugin().errorMessage("Failed to create an object from object data." +
+                                "'CustomItemModel' can only be used with 1.14 or higher.");
+                    }
+                }
+            }
             itemStack.setItemMeta(itemMeta);
             
             String[] locations = args[2].split(",");
             
-            Vector vector = new Vector(Double.valueOf(locations[0]), Double.valueOf(locations[1]), Double.valueOf(locations[2]));
+            Vector vector = new Vector(Double.parseDouble(locations[0]), Double.parseDouble(locations[1]), Double.parseDouble(locations[2]));
             
             String[] angles = args[3].split(",");
             
-            double x = Double.valueOf(angles[0]);
-            double y = Double.valueOf(angles[1]);
-            double z = Double.valueOf(angles[2]);
+            double x = Double.parseDouble(angles[0]);
+            double y = Double.parseDouble(angles[1]);
+            double z = Double.parseDouble(angles[2]);
             
             EulerAngle eulerAngle = new EulerAngle(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
             

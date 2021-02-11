@@ -1,5 +1,6 @@
 package be4rjp.blockstudio.api;
 
+import be4rjp.blockstudio.BlockStudio;
 import be4rjp.blockstudio.nms.NMSUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -24,7 +25,8 @@ public class BSArmorStand {
             });
         }else{
             try {
-                this.entityArmorStand = NMSUtil.createEntityArmorStand(bsCube.getLocation().getWorld());
+                this.entityArmorStand = NMSUtil.createEntityArmorStand(
+                        bsCube.getLocation().getWorld(), bsCube.getLocation().getX(), bsCube.getLocation().getY(), bsCube.getLocation().getZ());
                 NMSUtil.setEntityPositionRotation(this.entityArmorStand, location.getX(), location.getY(), location.getZ(), 0F, 0F);
                 
                 for(Player player : bsCube.getBsObject().getPlayers()) {
@@ -34,7 +36,8 @@ public class BSArmorStand {
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }
@@ -57,7 +60,8 @@ public class BSArmorStand {
                     sendHelmetEquipmentPacket(player, itemStack);
                 }
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }
@@ -66,7 +70,8 @@ public class BSArmorStand {
         try{
             NMSUtil.sendEntityEquipmentPacket(player, this.entityArmorStand, itemStack);
         } catch (Exception e) {
-            //e.printStackTrace();
+            if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                e.printStackTrace();
         }
     }
     
@@ -76,7 +81,8 @@ public class BSArmorStand {
                 NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
                 NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
             sendHelmetEquipmentPacket(player, bsCube.getHeadItemStack());
         }
@@ -87,7 +93,8 @@ public class BSArmorStand {
             try{
                 NMSUtil.sendEntityDestroyPacket(player, this.entityArmorStand);
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }
@@ -104,7 +111,8 @@ public class BSArmorStand {
                     NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
                 }
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }
@@ -121,7 +129,8 @@ public class BSArmorStand {
                     NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
                 }
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }
@@ -137,7 +146,8 @@ public class BSArmorStand {
                     sendDestroyPacket(player);
                 }
             } catch (Exception e) {
-                //e.printStackTrace();
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
             }
         }
     }

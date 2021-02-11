@@ -3,3 +3,5 @@ default-view-distance: 40
 spawn-objects: false
 
 default-task-period: 60
+
+log-level: 0

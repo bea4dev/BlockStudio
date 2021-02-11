@@ -17,9 +17,9 @@ public class ConfigUtil {
                 "'location' must be written in the format 'world, x, y, z'.");
         
         World world = Bukkit.getWorld(args[0]);
-        double x = Double.valueOf(args[1]);
-        double y = Double.valueOf(args[2]);
-        double z = Double.valueOf(args[3]);
+        double x = Double.parseDouble(args[1]);
+        double y = Double.parseDouble(args[2]);
+        double z = Double.parseDouble(args[3]);
         
         return new Location(world, x, y, z, 0, 0);
     }
@@ -33,9 +33,9 @@ public class ConfigUtil {
         if(args.length != 3) throw new IllegalArgumentException("Failed to load the direction data from the configuration." +
                 "'direction' must be written in the format 'x, y, z'.");
         
-        double x = Double.valueOf(args[0]);
-        double y = Double.valueOf(args[1]);
-        double z = Double.valueOf(args[2]);
+        double x = Double.parseDouble(args[0]);
+        double y = Double.parseDouble(args[1]);
+        double z = Double.parseDouble(args[2]);
         
         return new Vector(x, y, z);
     }
@@ -49,9 +49,9 @@ public class ConfigUtil {
         if(args.length != 3) throw new IllegalArgumentException("Failed to load the EulerAngle data from the configuration." +
                 "'euler-angle' must be written in the format 'x, y, z'.");
         
-        double x = Double.valueOf(args[0]);
-        double y = Double.valueOf(args[1]);
-        double z = Double.valueOf(args[2]);
+        double x = Double.parseDouble(args[0]);
+        double y = Double.parseDouble(args[1]);
+        double z = Double.parseDouble(args[2]);
         
         return new EulerAngle(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
     }

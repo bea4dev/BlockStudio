@@ -38,13 +38,19 @@ public class NMSUtil {
         
     }
     
-    public static Object createEntityArmorStand(World world)
+    public static Object createEntityArmorStand(World world, double x, double y, double z)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
         
         Class<?> EntityArmorStand = getNMSClass("EntityArmorStand");
         Class<?> NMSWorld = getNMSClass("World");
-        Object entityArmorStand = EntityArmorStand.getConstructor(NMSWorld).newInstance(getNMSWorld(world));
+        Object entityArmorStand = null;
+        try {
+            entityArmorStand = EntityArmorStand.getConstructor(NMSWorld).newInstance(getNMSWorld(world));
+        }catch (NoSuchMethodException e){
+            entityArmorStand = EntityArmorStand.getConstructor
+                    (NMSWorld, double.class, double.class, double.class).newInstance(getNMSWorld(world), x, y, z);
+        }
         
         Method setInvisible = EntityArmorStand.getMethod("setInvisible", boolean.class);
         setInvisible.invoke(entityArmorStand, true);

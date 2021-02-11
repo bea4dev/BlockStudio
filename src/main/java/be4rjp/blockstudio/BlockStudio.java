@@ -79,6 +79,15 @@ public final class BlockStudio extends JavaPlugin {
         }catch (Exception e){}
     }
     
+    public void errorMessage(String message){
+        getLogger().warning("!!! AN ERROR HAS OCCURRED !!!");
+        getLogger().warning(message);
+    }
+    
+    public int getLogLevel(){
+        return config.getConfig().getInt("log-level");
+    }
+    
     public DataStore getDataStore() {return dataStore;}
     
     public static BlockStudio getPlugin(){return plugin;}
