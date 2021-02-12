@@ -7,6 +7,7 @@ import be4rjp.blockstudio.api.BSUtil;
 import be4rjp.blockstudio.api.BlockStudioAPI;
 import be4rjp.blockstudio.data.PlayerData;
 import be4rjp.blockstudio.file.Config;
+import be4rjp.blockstudio.file.ObjectConfig;
 import be4rjp.blockstudio.file.ObjectData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,9 +33,16 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
             BlockStudio.config = new Config(BlockStudio.getPlugin(), "config.yml");
             BlockStudio.config.getConfig();
             
-            BlockStudio.getBlockStudioAPI().loadAllObjectData();
+            BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
+            api.loadAllObjectData();
+            
+            api.getObjectList().forEach(bsObject -> bsObject.remove(false));
+            api.getObjectList().clear();
+            api.getObjectMap().clear();
+            api.spawnAllObjects();
             
             sender.sendMessage(ChatColor.GREEN + "Successfully reloaded.");
+            return true;
         }
         
         
@@ -45,13 +53,15 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
         
         switch (args[0]){
             case "createdata":{
-                if(args.length != 2)
+                if(args.length != 2) {
                     sender.sendMessage(ChatColor.RED + "Please specify the name of the data.");
+                    return true;
+                }
     
                 PlayerData playerData = BlockStudio.getPlugin().getDataStore().getPlayerData((Player)sender);
                 
                 if(playerData == null){
-                    sender.sendMessage(ChatColor.RED + "Can't find PlayerData!");
+                    sender.sendMessage(ChatColor.RED + "Can't find player data!");
                     return true;
                 }
                 
@@ -70,14 +80,16 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 break;
             }
             case "savedata":{
-                if(args.length != 2)
+                if(args.length != 2) {
                     sender.sendMessage(ChatColor.RED + "Please specify the name of the data.");
+                    return true;
+                }
     
                 BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
                 ObjectData objectData = api.getObjectData(args[1]);
                 
                 if(objectData == null){
-                    sender.sendMessage(ChatColor.RED + "Can't find ObjectData!");
+                    sender.sendMessage(ChatColor.RED + "Can't find object data!");
                     return true;
                 }
                 
@@ -86,14 +98,16 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 break;
             }
             case "testspawn":{
-                if(args.length != 2)
+                if(args.length != 2) {
                     sender.sendMessage(ChatColor.RED + "Please specify the name of the data.");
+                    return true;
+                }
         
                 BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
                 ObjectData objectData = api.getObjectData(args[1]);
         
                 if(objectData == null){
-                    sender.sendMessage(ChatColor.RED + "Can't find ObjectData!");
+                    sender.sendMessage(ChatColor.RED + "Can't find object data!");
                     return true;
                 }
                 
@@ -107,6 +121,46 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 
                 sender.sendMessage(ChatColor.GREEN + "Object spawned successfully.");
                 sender.sendMessage(ChatColor.GREEN + "It will be displayed for 10 seconds.");
+                break;
+            }
+            case "addobject":{
+                if(args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Please specify the name of object to create.");
+                    return true;
+                }
+    
+                BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
+                if(api.hasNamedObject(args[1])){
+                    sender.sendMessage(ChatColor.RED + "An object with the specified name already exists.");
+                    return true;
+                }
+                
+                if(args.length < 3){
+                    sender.sendMessage(ChatColor.RED + "Please specify the name of an object data.");
+                    return true;
+                }
+    
+                ObjectData objectData = api.getObjectData(args[2]);
+                if(objectData == null){
+                    sender.sendMessage(ChatColor.RED + "Can't find specified object data!");
+                    return true;
+                }
+    
+                try {
+                    Player player = (Player) sender;
+                    ObjectConfig objectConfig = new ObjectConfig(args[1]);
+                    objectConfig.loadFile();
+                    objectConfig.setObjectDataName(args[2]);
+                    objectConfig.setLocation(player.getLocation());
+                    objectConfig.setDirection(player.getEyeLocation().getDirection());
+    
+                    objectConfig.spawnObject();
+                    objectConfig.saveFile();
+                }catch (Exception e){
+                    sender.sendMessage(ChatColor.RED + "The wrong argument was specified.");
+                    if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                        e.printStackTrace();
+                }
                 break;
             }
             case "item":{
@@ -129,6 +183,7 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
             list.add("createdata");
             list.add("savedata");
             list.add("testspawn");
+            list.add("addobject");
             list.add("reload");
             list.add("item");
             list.add("help");
@@ -140,6 +195,14 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 return list;
             }else if(args[0].equals("createdata")){
                 list.add("[data name]");
+                return list;
+            }else if(args[0].equals("addobject")){
+                list.add("[object name]");
+                return list;
+            }
+        }else if(args.length == 3){
+            if(args[0].equals("addobject")){
+                BlockStudio.getBlockStudioAPI().getObjectDataList().forEach(objectData -> list.add(objectData.getDataName()));
                 return list;
             }
         }

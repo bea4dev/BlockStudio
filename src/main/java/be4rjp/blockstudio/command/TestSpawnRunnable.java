@@ -16,7 +16,7 @@ public class TestSpawnRunnable extends BukkitRunnable {
     
     @Override
     public void run() {
-        bsObject.setOriginByEulerAngle(new EulerAngle(Math.toRadians(i), Math.toRadians(i), Math.toRadians(i)));
+        bsObject.setOriginByEulerAngle(new EulerAngle(Math.toRadians((double)i/2.0), Math.toRadians((double)i/2.0), Math.toRadians((double)i/2.0)));
         bsObject.move();
         
         if(i == 200){

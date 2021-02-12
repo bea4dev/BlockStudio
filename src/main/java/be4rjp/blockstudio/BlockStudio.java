@@ -74,9 +74,9 @@ public final class BlockStudio extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        try {
-            this.api.getObjectList().stream().forEach(BSObject::remove);
-        }catch (Exception e){}
+        api.getObjectList().forEach(bsObject -> bsObject.remove(false));
+        api.getObjectList().clear();
+        api.getObjectMap().clear();
     }
     
     public void errorMessage(String message){

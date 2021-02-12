@@ -233,13 +233,13 @@ public class BSObject {
      * このオブジェクトをデスポーンさせます。
      */
     public void remove(){
-        for(BSCube bsCube : list){
-            bsCube.getBSArmorStand().remove();
-        }
-        
         try{
             bsObjectPlayerRunnable.cancel();
         }catch (Exception e){}
+        
+        for(BSCube bsCube : list){
+            bsCube.getBSArmorStand().remove();
+        }
         
         if(api.hasNamedObject(name)){
             api.getObjectMap().remove(name);
@@ -247,6 +247,30 @@ public class BSObject {
         
         if(api.getObjectList().contains(this)){
             api.getObjectList().remove(this);
+        }
+    }
+    
+    /**
+     * Despawn this object.
+     * このオブジェクトをデスポーンさせます。
+     */
+    public void remove(boolean listClear){
+        try{
+            bsObjectPlayerRunnable.cancel();
+        }catch (Exception e){}
+        
+        for(BSCube bsCube : list){
+            bsCube.getBSArmorStand().remove();
+        }
+        
+        if(listClear) {
+            if (api.hasNamedObject(name)) {
+                api.getObjectMap().remove(name);
+            }
+    
+            if (api.getObjectList().contains(this)) {
+                api.getObjectList().remove(this);
+            }
         }
     }
     

@@ -64,6 +64,26 @@ public class ObjectConfig {
     
     public String getAnimation(){return config.getString("animation");}
     
+    public void setObjectDataName(String name){config.set("object-data", name);}
+    
+    public void setLocation(Location location){
+        config.set("location", location.getWorld().getName() + ", " + location.getX() + ", " + location.getY() + ", " + location.getZ());
+    }
+    
+    public void setDirection(Vector direction){
+        config.set("direction", direction.getX() + ", " + direction.getY() + ", " + direction.getZ());
+    }
+    
+    public void setEulerAngle(EulerAngle eulerAngle){
+        config.set("euler-angle", eulerAngle.getX() + ", " + eulerAngle.getY() + ", " + eulerAngle.getZ());
+    }
+    
+    public void setViewDistance(double distance){config.set("view-distance", distance);}
+    
+    public void setTaskPeriod(int period){config.set("task-period", period);}
+    
+    public void setAnimation(String option){config.set("animation", option);}
+    
     
     public void spawnObject(){
         BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
@@ -111,7 +131,7 @@ public class ObjectConfig {
         }
     }
     
-    @Deprecated
+   
     public void saveFile(){
         try {
             config.save(file);
