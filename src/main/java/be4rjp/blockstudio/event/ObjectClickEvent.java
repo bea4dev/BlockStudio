@@ -1,6 +1,7 @@
 package be4rjp.blockstudio.event;
 
 import be4rjp.blockstudio.api.BSObject;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -9,9 +10,11 @@ public class ObjectClickEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     
     private final BSObject bsObject;
+    private final Player player;
     
-    public ObjectClickEvent(BSObject bsObject){
+    public ObjectClickEvent(BSObject bsObject, Player player){
         this.bsObject = bsObject;
+        this.player = player;
     }
     
     @Override
@@ -29,5 +32,13 @@ public class ObjectClickEvent extends Event {
      */
     public BSObject getBSObject() {
         return bsObject;
+    }
+    
+    /**
+     * Get player who clicked object.
+     * @return Player
+     */
+    public Player getPlayer() {
+        return player;
     }
 }
