@@ -167,7 +167,7 @@ public class BSObject {
     }
     
     
-    public String getName() {return name;}
+    public String getName(){return name;}
     
     public Vector getXVector(){return this.x;}
     

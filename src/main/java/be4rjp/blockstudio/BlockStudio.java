@@ -1,6 +1,5 @@
 package be4rjp.blockstudio;
 
-import be4rjp.blockstudio.api.BSObject;
 import be4rjp.blockstudio.api.BlockStudioAPI;
 import be4rjp.blockstudio.command.bsCommandExecutor;
 import be4rjp.blockstudio.data.DataStore;

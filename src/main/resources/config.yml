@@ -5,3 +5,5 @@ spawn-objects: false
 default-task-period: 60
 
 log-level: 0
+
+object-click-event: true

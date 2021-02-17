@@ -1,5 +1,6 @@
 package be4rjp.blockstudio.nms;
 
+import be4rjp.blockstudio.BlockStudio;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import org.bukkit.Bukkit;
@@ -88,11 +89,11 @@ public class NMSUtil {
         
         Method setInvisible = EntityArmorStand.getMethod("setInvisible", boolean.class);
         setInvisible.invoke(entityArmorStand, true);
-        
-        /*
-        Method setMarker = EntityArmorStand.getMethod("setMarker", boolean.class);
-        setMarker.invoke(entityArmorStand, true);
-         */
+    
+        if(!BlockStudio.config.getConfig().getBoolean("object-click-event")) {
+            Method setMarker = EntityArmorStand.getMethod("setMarker", boolean.class);
+            setMarker.invoke(entityArmorStand, true);
+        }
         
         Method setNoGravity = EntityArmorStand.getMethod("setNoGravity", boolean.class);
         setNoGravity.invoke(entityArmorStand, true);

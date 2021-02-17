@@ -67,16 +67,18 @@ public class EventListener implements Listener {
     @EventHandler
     public void onjoin(PlayerJoinEvent event){
         //Inject packet handler
-        Player player = event.getPlayer();
+        if(BlockStudio.config.getConfig().getBoolean("object-click-event")) {
+            Player player = event.getPlayer();
     
-        PacketHandler packetHandler = new PacketHandler(player);
-        
-        try {
-            ChannelPipeline pipeline = NMSUtil.getChannel(player).pipeline();
-            pipeline.addBefore("packet_handler", player.getName(), packetHandler);
-        }catch (Exception e){
-            if(BlockStudio.getPlugin().getLogLevel() >= 2){
-                e.printStackTrace();
+            PacketHandler packetHandler = new PacketHandler(player);
+    
+            try {
+                ChannelPipeline pipeline = NMSUtil.getChannel(player).pipeline();
+                pipeline.addBefore("packet_handler", "BlockStudioPacketInjector:" + player.getName(), packetHandler);
+            } catch (Exception e) {
+                if (BlockStudio.getPlugin().getLogLevel() >= 2) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -84,18 +86,20 @@ public class EventListener implements Listener {
     
     @EventHandler
     public void onleave(PlayerQuitEvent event){
-        Player player = event.getPlayer();
-        
-        try {
-            Channel channel = NMSUtil.getChannel(player);
+        if(BlockStudio.config.getConfig().getBoolean("object-click-event")) {
+            Player player = event.getPlayer();
     
-            channel.eventLoop().submit(() -> {
-                channel.pipeline().remove(player.getName());
-                return null;
-            });
-        }catch (Exception e){
-            if(BlockStudio.getPlugin().getLogLevel() >= 2){
-                e.printStackTrace();
+            try {
+                Channel channel = NMSUtil.getChannel(player);
+        
+                channel.eventLoop().submit(() -> {
+                    channel.pipeline().remove(player.getName());
+                    return null;
+                });
+            } catch (Exception e) {
+                if (BlockStudio.getPlugin().getLogLevel() >= 2) {
+                    e.printStackTrace();
+                }
             }
         }
     }
