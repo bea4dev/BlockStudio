@@ -19,7 +19,7 @@ public class ObjectClickPacketManager {
                 BSArmorStand bsArmorStand = bsCube.getBSArmorStand();
                 int armorStandID = bsArmorStand.getEntityID();
                 if(entityID == armorStandID){
-                    ObjectClickEvent event = new ObjectClickEvent(bsObject);
+                    ObjectClickEvent event = new ObjectClickEvent(bsObject, player);
                     BlockStudio.getPlugin().getServer().getPluginManager().callEvent(event);
                 }
             }
