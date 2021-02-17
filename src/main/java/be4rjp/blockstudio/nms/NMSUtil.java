@@ -1,5 +1,7 @@
 package be4rjp.blockstudio.nms;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ public class NMSUtil {
         return nmsClass;
     }
     
+    
     public static Object getConnection(Player player) throws SecurityException, NoSuchMethodException,
             NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         
@@ -26,8 +29,27 @@ public class NMSUtil {
         Field conField = nmsPlayer.getClass().getField("playerConnection");
         Object con = conField.get(nmsPlayer);
         return con;
-        
     }
+    
+    
+    public static Channel getChannel(Player player) throws SecurityException, NoSuchMethodException,
+            NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        
+        Method getHandle = player.getClass().getMethod("getHandle");
+        Object nmsPlayer = getHandle.invoke(player);
+        
+        Field conField = nmsPlayer.getClass().getField("playerConnection");
+        Object con = conField.get(nmsPlayer);
+        
+        Field netField = con.getClass().getField("networkManager");
+        Object net = netField.get(con);
+        
+        Field chaField = net.getClass().getField("channel");
+        Object channel = chaField.get(net);
+        
+        return (Channel)channel;
+    }
+    
     
     public static Object getNMSWorld(World world) throws SecurityException, NoSuchMethodException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException {
@@ -35,8 +57,20 @@ public class NMSUtil {
         Method getHandle = world.getClass().getMethod("getHandle");
         Object nmsWorld = getHandle.invoke(world);
         return nmsWorld;
-        
     }
+    
+    
+    public static int getEntityID(Object entity)
+            throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        
+        Class<?> Entity = getNMSClass("Entity");
+        Method getBukkitEntity = Entity.getMethod("getBukkitEntity");
+        Object bukkitEntity = getBukkitEntity.invoke(entity);
+        
+        return ((org.bukkit.entity.Entity)bukkitEntity).getEntityId();
+    }
+    
     
     public static Object createEntityArmorStand(World world, double x, double y, double z)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
@@ -55,15 +89,17 @@ public class NMSUtil {
         Method setInvisible = EntityArmorStand.getMethod("setInvisible", boolean.class);
         setInvisible.invoke(entityArmorStand, true);
         
+        /*
         Method setMarker = EntityArmorStand.getMethod("setMarker", boolean.class);
         setMarker.invoke(entityArmorStand, true);
+         */
         
         Method setNoGravity = EntityArmorStand.getMethod("setNoGravity", boolean.class);
         setNoGravity.invoke(entityArmorStand, true);
         
         return entityArmorStand;
-        
     }
+    
     
     public static void setEntityPositionRotation(Object entity, double x, double y, double z, float yaw, float pitch)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
@@ -73,6 +109,7 @@ public class NMSUtil {
         Method setPositionRotation = Entity.getMethod("setPositionRotation", double.class, double.class, double.class, float.class, float.class);
         setPositionRotation.invoke(entity, x, y, z, yaw, pitch);
     }
+    
     
     public static void setArmorStandHeadRotation(Object entity, float x, float y, float z)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
@@ -86,6 +123,7 @@ public class NMSUtil {
         setHeadPose.invoke(entity, vector3f);
     }
     
+    
     public static void sendEntityTeleportPacket(Player player, Object entity)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -97,6 +135,7 @@ public class NMSUtil {
         Method sendPacket = getNMSClass("PlayerConnection").getMethod("sendPacket", getNMSClass("Packet"));
         sendPacket.invoke(getConnection(player), packet);
     }
+    
     
     public static void sendEntityDestroyPacket(Player player, Object entity)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
@@ -115,6 +154,7 @@ public class NMSUtil {
         sendPacket.invoke(getConnection(player), packet);
     }
     
+    
     public static void sendSpawnEntityLivingPacket(Player player, Object entity)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -126,6 +166,7 @@ public class NMSUtil {
         Method sendPacket = getNMSClass("PlayerConnection").getMethod("sendPacket", getNMSClass("Packet"));
         sendPacket.invoke(getConnection(player), packet);
     }
+    
     
     public static void sendEntityMetadataPacket(Player player, Object entity)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
@@ -147,12 +188,12 @@ public class NMSUtil {
         sendPacket.invoke(getConnection(player), packet);
     }
     
+    
     public static void sendEntityEquipmentPacket(Player player, Object entity, ItemStack itemStack)
             throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
         
         Class<?> packetClass = getNMSClass("PacketPlayOutEntityEquipment");
-        Class<?> Entity = getNMSClass("Entity");
         String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
         Class<?> CraftItemStack = Class.forName("org.bukkit.craftbukkit." + version + "inventory.CraftItemStack");
         Class<?> ItemStack = getNMSClass("ItemStack");
@@ -167,11 +208,8 @@ public class NMSUtil {
         Method asNMSCopy = CraftItemStack.getMethod("asNMSCopy", org.bukkit.inventory.ItemStack.class);
         Object nmsItemStack = asNMSCopy.invoke(null, itemStack);
         
-        Method getBukkitEntity = Entity.getMethod("getBukkitEntity");
-        Object bukkitEntity = getBukkitEntity.invoke(entity);
-        
         Constructor<?> packetConstructor = packetClass.getConstructor(int.class, EnumItemSlot, ItemStack);
-        Object packet = packetConstructor.newInstance(((org.bukkit.entity.Entity)bukkitEntity).getEntityId(), slot, nmsItemStack);
+        Object packet = packetConstructor.newInstance(getEntityID(entity), slot, nmsItemStack);
         Method sendPacket = getNMSClass("PlayerConnection").getMethod("sendPacket", getNMSClass("Packet"));
         sendPacket.invoke(getConnection(player), packet);
     }

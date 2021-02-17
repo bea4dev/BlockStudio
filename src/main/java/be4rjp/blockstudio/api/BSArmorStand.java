@@ -42,6 +42,19 @@ public class BSArmorStand {
         }
     }
     
+    public int getEntityID() {
+        if (this.armorStand != null) {
+            return this.armorStand.getEntityId();
+        } else {
+            try {
+                return NMSUtil.getEntityID(this.entityArmorStand);
+            }catch (Exception e){
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
+            }
+        }
+        return 0;
+    }
     
     public ArmorStand getBukkitArmorStand() {return armorStand;}
     
