@@ -3,10 +3,17 @@ package be4rjp.blockstudio.nms.packet;
 import be4rjp.blockstudio.BlockStudio;
 import be4rjp.blockstudio.nms.NMSUtil;
 import io.netty.channel.*;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 
 public class PacketHandler extends ChannelDuplexHandler{
+    
+    private final Player player;
+    
+    public PacketHandler(Player player){
+        this.player = player;
+    }
     
     @Override
     public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
@@ -18,7 +25,7 @@ public class PacketHandler extends ChannelDuplexHandler{
                 Field a = PacketPlayInUseEntity.getDeclaredField("a");
                 a.setAccessible(true);
                 int entityID = (Integer) a.get(packet);
-                ObjectClickPacketManager.checkAllObject(entityID);
+                ObjectClickPacketManager.checkAllObject(entityID, player);
             }
         }catch (Exception e){
             if(BlockStudio.getPlugin().getLogLevel() >= 2){

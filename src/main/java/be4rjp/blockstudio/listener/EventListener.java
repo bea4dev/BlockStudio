@@ -69,7 +69,7 @@ public class EventListener implements Listener {
         //Inject packet handler
         Player player = event.getPlayer();
     
-        PacketHandler packetHandler = new PacketHandler();
+        PacketHandler packetHandler = new PacketHandler(player);
         
         try {
             ChannelPipeline pipeline = NMSUtil.getChannel(player).pipeline();

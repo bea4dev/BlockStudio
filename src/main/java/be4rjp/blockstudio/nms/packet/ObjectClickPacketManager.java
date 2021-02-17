@@ -6,10 +6,11 @@ import be4rjp.blockstudio.api.BSCube;
 import be4rjp.blockstudio.api.BSObject;
 import be4rjp.blockstudio.api.BlockStudioAPI;
 import be4rjp.blockstudio.event.ObjectClickEvent;
+import org.bukkit.entity.Player;
 
 public class ObjectClickPacketManager {
     
-    public static void checkAllObject(int entityID){
+    public static void checkAllObject(int entityID, Player player){
         
         BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
         
