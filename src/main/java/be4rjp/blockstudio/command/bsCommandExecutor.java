@@ -29,9 +29,7 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
         
         if(args[0].equals("reload")){
             //Load config
-            sender.sendMessage(ChatColor.AQUA + "Loading config files...");
-            BlockStudio.config = new Config(BlockStudio.getPlugin(), "config.yml");
-            BlockStudio.config.getConfig();
+            BlockStudio.getPlugin().loadConfig();
             
             BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
             api.loadAllObjectData();

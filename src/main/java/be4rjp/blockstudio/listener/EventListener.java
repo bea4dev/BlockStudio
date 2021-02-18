@@ -67,7 +67,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onjoin(PlayerJoinEvent event){
         //Inject packet handler
-        if(BlockStudio.config.getConfig().getBoolean("object-click-event")) {
+        if(BlockStudio.getPlugin().isEnableObjectClickEvent()) {
             Player player = event.getPlayer();
     
             PacketHandler packetHandler = new PacketHandler(player);
@@ -86,7 +86,7 @@ public class EventListener implements Listener {
     
     @EventHandler
     public void onleave(PlayerQuitEvent event){
-        if(BlockStudio.config.getConfig().getBoolean("object-click-event")) {
+        if(BlockStudio.getPlugin().isEnableObjectClickEvent()) {
             Player player = event.getPlayer();
     
             try {

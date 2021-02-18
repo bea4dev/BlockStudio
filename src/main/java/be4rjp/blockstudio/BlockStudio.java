@@ -19,6 +19,9 @@ public final class BlockStudio extends JavaPlugin {
     
     public static Config config;
     
+    private int LOG_LEVEL;
+    private boolean IS_ENABLE_OBJECT_CLICK_EVENT;
+    
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -26,10 +29,7 @@ public final class BlockStudio extends JavaPlugin {
         
         
         //Load config
-        getLogger().info("Loading config files...");
-        config = new Config(this, "config.yml");
-        config.saveDefaultConfig();
-        config.getConfig();
+        loadConfig();
         
         
         //起動時にインスタンス作成
@@ -70,6 +70,7 @@ public final class BlockStudio extends JavaPlugin {
             this.api.spawnAllObjects();
     }
     
+    
     @Override
     public void onDisable() {
         // Plugin shutdown logic
@@ -78,18 +79,35 @@ public final class BlockStudio extends JavaPlugin {
         api.getObjectMap().clear();
     }
     
+    
+    public void loadConfig(){
+        getLogger().info("Loading config files...");
+        config = new Config(this, "config.yml");
+        config.saveDefaultConfig();
+        config.getConfig();
+    
+        LOG_LEVEL = config.getConfig().getInt("log-level");
+        IS_ENABLE_OBJECT_CLICK_EVENT = config.getConfig().getBoolean("object-click-event");
+    }
+    
+    
     public void errorMessage(String message){
         getLogger().warning("!!! AN ERROR HAS OCCURRED !!!");
         getLogger().warning(message);
     }
     
-    public int getLogLevel(){
-        return config.getConfig().getInt("log-level");
-    }
+    
+    public int getLogLevel(){return LOG_LEVEL;}
+    
+    
+    public boolean isEnableObjectClickEvent(){return IS_ENABLE_OBJECT_CLICK_EVENT;}
+    
     
     public DataStore getDataStore() {return dataStore;}
     
+    
     public static BlockStudio getPlugin(){return plugin;}
+    
     
     public static BlockStudioAPI getBlockStudioAPI() {return plugin.api;}
 }
