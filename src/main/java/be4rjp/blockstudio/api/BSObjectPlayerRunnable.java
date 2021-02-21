@@ -21,6 +21,7 @@ public class BSObjectPlayerRunnable extends BukkitRunnable {
             playerList.removeIf(player -> !player.isOnline());
             
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                if (!player.isOnline()) continue;
                 if (player.getWorld() != bsObject.getBaseLocation().getWorld()) continue;
                 
                 if (player.getLocation().distance(bsObject.getBaseLocation()) < bsObject.getViewDistance()) {

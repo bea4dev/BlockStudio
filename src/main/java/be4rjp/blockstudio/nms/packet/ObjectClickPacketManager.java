@@ -7,6 +7,7 @@ import be4rjp.blockstudio.api.BSObject;
 import be4rjp.blockstudio.api.BlockStudioAPI;
 import be4rjp.blockstudio.event.ObjectClickEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ObjectClickPacketManager {
     
@@ -19,8 +20,14 @@ public class ObjectClickPacketManager {
                 BSArmorStand bsArmorStand = bsCube.getBSArmorStand();
                 int armorStandID = bsArmorStand.getEntityID();
                 if(entityID == armorStandID){
-                    ObjectClickEvent event = new ObjectClickEvent(bsObject, player);
-                    BlockStudio.getPlugin().getServer().getPluginManager().callEvent(event);
+                    BukkitRunnable sync = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            ObjectClickEvent event = new ObjectClickEvent(bsObject, player);
+                            BlockStudio.getPlugin().getServer().getPluginManager().callEvent(event);
+                        }
+                    };
+                    sync.runTask(BlockStudio.getPlugin());
                 }
             }
         }

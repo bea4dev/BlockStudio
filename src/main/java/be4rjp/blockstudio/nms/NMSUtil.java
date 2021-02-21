@@ -1,6 +1,7 @@
 package be4rjp.blockstudio.nms;
 
 import be4rjp.blockstudio.BlockStudio;
+import com.mojang.datafixers.util.Pair;
 import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -11,6 +12,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NMSUtil {
     public static Class<?> getNMSClass(String nmsClassString) throws ClassNotFoundException {
@@ -208,8 +211,18 @@ public class NMSUtil {
         Method asNMSCopy = CraftItemStack.getMethod("asNMSCopy", org.bukkit.inventory.ItemStack.class);
         Object nmsItemStack = asNMSCopy.invoke(null, itemStack);
         
-        Constructor<?> packetConstructor = packetClass.getConstructor(int.class, EnumItemSlot, ItemStack);
-        Object packet = packetConstructor.newInstance(getEntityID(entity), slot, nmsItemStack);
+        Object packet = null;
+        try {
+            Constructor<?> packetConstructor = packetClass.getConstructor(int.class, EnumItemSlot, ItemStack);
+            packet = packetConstructor.newInstance(getEntityID(entity), slot, nmsItemStack);
+        }catch (NoSuchMethodException e){
+            Constructor<?> packetConstructor = packetClass.getConstructor(int.class, List.class);
+            Pair pair = new Pair(slot, nmsItemStack);
+            List<Pair> list = new ArrayList<>();
+            list.add(pair);
+            packet = packetConstructor.newInstance(getEntityID(entity), list);
+        }
+        
         Method sendPacket = getNMSClass("PlayerConnection").getMethod("sendPacket", getNMSClass("Packet"));
         sendPacket.invoke(getConnection(player), packet);
     }
