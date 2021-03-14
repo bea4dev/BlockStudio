@@ -29,8 +29,8 @@ public class BSCustomBlockPlayerRunnable extends BukkitRunnable {
                 int x = player.getLocation().getBlockX();
                 int z = player.getLocation().getBlockZ();
                 
-                int cx = bsCustomBlockChunk.getChunk().getX();
-                int cz = bsCustomBlockChunk.getChunk().getZ();
+                int cx = bsCustomBlockChunk.getChunk().getX() * 16;
+                int cz = bsCustomBlockChunk.getChunk().getZ() * 16;
                 
                 if (Math.sqrt( Math.pow(x - cx, 2) + Math.pow(z -cz, 2) ) < bsCustomBlockChunk.getAPI().getCustomBlockViewDistance()) {
                     if (!playerList.contains(player)) {
