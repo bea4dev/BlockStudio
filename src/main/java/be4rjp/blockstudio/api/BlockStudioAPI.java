@@ -1,11 +1,14 @@
 package be4rjp.blockstudio.api;
 
-import be4rjp.blockstudio.file.CubeDataManager;
-import be4rjp.blockstudio.file.ObjectConfig;
-import be4rjp.blockstudio.file.ObjectData;
+import be4rjp.blockstudio.BlockStudio;
+import be4rjp.blockstudio.file.*;
 import be4rjp.blockstudio.region.RegionBlocks;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -18,28 +21,52 @@ public class BlockStudioAPI {
     private final List<BSObject> objectList;
     private final Map<String, ObjectData> objectDataMap;
     private final List<ObjectData> objectDataList;
+    private final Map<Chunk, BSCustomBlockChunk> bsCustomBlockChunkMap;
     
     private double defaultViewDistance;
+    private double customBlockViewDistance;
+    
+    private List<ItemStack> blockItemList;
+    private Map<String, ItemStack> blockItemNameMap;
+    private Map<ItemStack, String> nameBlockItemMap;
+    
+    private Config customBlockDataConfig;
+    private Config customBlockConfig;
+    
     
     
     /**
      * Create API instance.
      * @param plugin JavaPlugin that tasks will be allocated on.
      */
-    public BlockStudioAPI(JavaPlugin plugin, double defaultViewDistance){
+    public BlockStudioAPI(JavaPlugin plugin, double defaultViewDistance, double customBlockViewDistance){
         this.plugin = plugin;
         this.defaultViewDistance = defaultViewDistance;
+        this.customBlockViewDistance = customBlockViewDistance;
         
         this.objectMap = new HashMap<>();
         this.objectList = new ArrayList<>();
         this.objectDataMap = new HashMap<>();
         this.objectDataList = new ArrayList<>();
+        this.bsCustomBlockChunkMap = new HashMap<>();
+    
+        this.blockItemList = new ArrayList<>();
+        this.blockItemNameMap = new HashMap<>();
+        this.nameBlockItemMap = new HashMap<>();
+    
+        this.customBlockDataConfig = new Config(plugin, "CustomBlock/custom-block-data.yml");
+        this.customBlockDataConfig.saveDefaultConfig();
+    
+        this.customBlockConfig = new Config(plugin, "CustomBlock/custom-block.yml");
+        this.customBlockConfig.saveDefaultConfig();
     }
     
     
     public JavaPlugin getPlugin() {return plugin;}
     
     public double getDefaultViewDistance() {return defaultViewDistance;}
+    
+    public double getCustomBlockViewDistance(){return customBlockViewDistance;}
     
     public List<BSObject> getObjectList() {return objectList;}
     
@@ -50,6 +77,16 @@ public class BlockStudioAPI {
     public Map<String, ObjectData> getObjectDataMap() {return objectDataMap;}
     
     public void setDefaultViewDistance(double defaultViewDistance) {this.defaultViewDistance = defaultViewDistance;}
+    
+    public Map<Chunk, BSCustomBlockChunk> getBSCustomBlockChunkMap(){return bsCustomBlockChunkMap;}
+    
+    public Config getCustomBlockConfig(){return customBlockConfig;}
+    
+    public Config getCustomBlockDataConfig(){return customBlockDataConfig;}
+    
+    public List<ItemStack> getBlockItemList(){return blockItemList;}
+    
+    public Map<ItemStack, String> getNameBlockItemMap(){return nameBlockItemMap;}
     
     
     /**
@@ -389,5 +426,98 @@ public class BlockStudioAPI {
         objectDataMap.put(dataName, objectData);
         
         return objectData;
+    }
+    
+    
+    /**
+     *
+     * @param block
+     * @param blockItem
+     * @return
+     */
+    public BSCustomBlock setCustomBlock(Block block, ItemStack blockItem){
+        BSCustomBlockChunk bsCustomBlockChunk = bsCustomBlockChunkMap.get(block.getChunk());
+        
+        if(bsCustomBlockChunk == null){
+            bsCustomBlockChunk = new BSCustomBlockChunk(this, block.getChunk());
+            bsCustomBlockChunk.startTaskAsync(100);
+            bsCustomBlockChunkMap.put(block.getChunk(), bsCustomBlockChunk);
+        }
+        
+        BSCustomBlock bsCustomBlock = new BSCustomBlock(bsCustomBlockChunk, block, blockItem);
+        bsCustomBlockChunk.getBlockList().add(bsCustomBlock);
+        
+        return bsCustomBlock;
+    }
+    
+    
+    public BSCustomBlock addCustomBlock(Block block, ItemStack blockItem, String modelName){
+        List<String> list = customBlockConfig.getConfig().getStringList("custom-blocks");
+        list.add(modelName + ", " + block.getWorld().getName() + ", " + block.getX() + ", " + block.getY() + ", " + block.getZ());
+        customBlockConfig.getConfig().set("custom-blocks", list);
+        
+        return setCustomBlock(block, blockItem);
+    }
+    
+    
+    public void breakCustomBlock(Block block){
+        BSCustomBlockChunk bsCustomBlockChunk = bsCustomBlockChunkMap.get(block.getChunk());
+    
+        if(bsCustomBlockChunk == null){
+            return;
+        }
+        bsCustomBlockChunk.getBlockList().forEach(bsCustomBlock -> {
+            if(bsCustomBlock.getBlock().getX() == block.getX() && bsCustomBlock.getBlock().getY() == block.getY() && bsCustomBlock.getBlock().getZ() == block.getZ()){
+                bsCustomBlock.breakBlock();
+            }
+        });
+    
+        bsCustomBlockChunk.getBlockList().removeIf(bsCustomBlock -> bsCustomBlock.getBlock() == block);
+        
+        List<String> blockList = customBlockConfig.getConfig().getStringList("custom-blocks");
+        blockList.removeIf(line -> {
+            Location location = ConfigUtil.toLocation(ConfigUtil.getLocationLine(line));
+            return location.getBlockX() == block.getX() && location.getBlockY() == block.getY() && location.getBlockZ() == block.getZ();
+        });
+        customBlockConfig.getConfig().set("custom-blocks", blockList);
+    }
+    
+    
+    public void loadAndSpawnAllCustomBlocks(){
+        customBlockDataConfig.getConfig();
+        customBlockConfig.getConfig();
+        
+        blockItemList.clear();
+        blockItemNameMap.clear();
+    
+        for (String item : customBlockDataConfig.getConfig().getConfigurationSection("custom-model-data").getKeys(false)){
+            String material = customBlockDataConfig.getConfig().getString("custom-model-data." + item + ".material");
+            String name = customBlockDataConfig.getConfig().getString("custom-model-data." + item + ".display-name");
+            int id = customBlockDataConfig.getConfig().getInt("custom-model-data." + item + ".model-id");
+            
+            ItemStack itemStack = new ItemStack(Material.getMaterial(material));
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(name);
+            itemMeta.setCustomModelData(id);
+            itemStack.setItemMeta(itemMeta);
+            
+            blockItemList.add(itemStack);
+            blockItemNameMap.put(item, itemStack);
+            nameBlockItemMap.put(itemStack, item);
+        }
+    
+        customBlockConfig.getConfig().getStringList("custom-blocks").forEach(line -> {
+            Location location = ConfigUtil.toLocation(ConfigUtil.getLocationLine(line));
+            String modelName = ConfigUtil.getCustomModel(line);
+            
+            ItemStack itemStack = blockItemNameMap.get(modelName);
+            
+            if(itemStack == null){
+                BlockStudio.getPlugin().errorMessage("Model data : " + modelName + " is not found!");
+                return;
+            }
+            
+            setCustomBlock(location.getBlock(), itemStack);
+        });
     }
 }

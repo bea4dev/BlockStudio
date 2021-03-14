@@ -1,8 +1,10 @@
 package be4rjp.blockstudio.file;
 
+import be4rjp.blockstudio.BlockStudio;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
@@ -17,6 +19,13 @@ public class ConfigUtil {
                 "'location' must be written in the format 'world, x, y, z'.");
         
         World world = Bukkit.getWorld(args[0]);
+        
+        if(world == null){
+            BlockStudio.getPlugin().getLogger().info("Loading world [ " + args[0] + " ]");
+            Bukkit.createWorld(new WorldCreator(args[0]));
+            world = Bukkit.getWorld(args[0]);
+        }
+        
         double x = Double.parseDouble(args[1]);
         double y = Double.parseDouble(args[2]);
         double z = Double.parseDouble(args[3]);
@@ -54,5 +63,19 @@ public class ConfigUtil {
         double z = Double.parseDouble(args[2]);
         
         return new EulerAngle(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
+    }
+    
+    public static String getLocationLine(String line){
+        String temp1 = line.replace(" ", "");
+        String[] tempArr = temp1.split(",");
+        
+        return temp1.replace(tempArr[0] + ",", "");
+    }
+    
+    public static String getCustomModel(String line){
+        String temp1 = line.replace(" ", "");
+        String[] tempArr = temp1.split(",");
+        
+        return tempArr[0];
     }
 }

@@ -1,10 +1,7 @@
 package be4rjp.blockstudio.command;
 
 import be4rjp.blockstudio.BlockStudio;
-import be4rjp.blockstudio.api.BSCube;
-import be4rjp.blockstudio.api.BSObject;
-import be4rjp.blockstudio.api.BSUtil;
-import be4rjp.blockstudio.api.BlockStudioAPI;
+import be4rjp.blockstudio.api.*;
 import be4rjp.blockstudio.data.PlayerData;
 import be4rjp.blockstudio.file.Config;
 import be4rjp.blockstudio.file.ObjectConfig;
@@ -28,16 +25,29 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
         
         
         if(args[0].equals("reload")){
+            BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
+            //Save config
+            api.getCustomBlockConfig().saveConfig();
+            api.getCustomBlockDataConfig().saveConfig();
+            
+            List<BSCustomBlock> blockList = new ArrayList<>();
+            api.getBSCustomBlockChunkMap().values().forEach(bsCustomBlockChunk -> {
+                bsCustomBlockChunk.getBlockList().forEach(bsCustomBlock -> blockList.add(bsCustomBlock));
+            });
+            blockList.forEach(bsCustomBlock -> bsCustomBlock.getArmorStand().remove());
+            
             //Load config
             BlockStudio.getPlugin().loadConfig();
             
-            BlockStudioAPI api = BlockStudio.getBlockStudioAPI();
             api.loadAllObjectData();
             
             api.getObjectList().forEach(bsObject -> bsObject.remove(false));
             api.getObjectList().clear();
             api.getObjectMap().clear();
             api.spawnAllObjects();
+            
+            api.loadAndSpawnAllCustomBlocks();
+            
             
             sender.sendMessage(ChatColor.GREEN + "Successfully reloaded.");
             return true;

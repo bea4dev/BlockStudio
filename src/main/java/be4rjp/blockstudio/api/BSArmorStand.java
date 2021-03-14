@@ -10,12 +10,14 @@ import org.bukkit.util.EulerAngle;
 
 public class BSArmorStand {
     private final BSCube bsCube;
+    private final BSCustomBlock bsCustomBlock;
     private Location location;
     private ArmorStand armorStand;
     private Object entityArmorStand;
     
     public BSArmorStand(BSCube bsCube, Location location, boolean useBukkitAPI){
         this.bsCube = bsCube;
+        this.bsCustomBlock = null;
         this.location = location;
         if(useBukkitAPI){
             this.armorStand = location.getWorld().spawn(location, ArmorStand.class, armorStand -> {
@@ -42,6 +44,37 @@ public class BSArmorStand {
         }
     }
     
+    
+    public BSArmorStand(BSCustomBlock bsCustomBlock, Location location, boolean useBukkitAPI){
+        this.bsCube = null;
+        this.bsCustomBlock = bsCustomBlock;
+        this.location = location;
+        if(useBukkitAPI){
+            this.armorStand = location.getWorld().spawn(location, ArmorStand.class, armorStand -> {
+                armorStand.setVisible(false);
+                armorStand.setGravity(false);
+                armorStand.setMarker(true);
+            });
+        }else{
+            try {
+                this.entityArmorStand = NMSUtil.createEntityArmorStand(
+                        bsCustomBlock.getBlock().getWorld(), bsCustomBlock.getBlock().getX() + 0.5, bsCustomBlock.getBlock().getY(), bsCustomBlock.getBlock().getZ() + 0.5);
+                NMSUtil.setEntityPositionRotation(this.entityArmorStand, bsCustomBlock.getBlock().getX() + 0.5, bsCustomBlock.getBlock().getY(), bsCustomBlock.getBlock().getZ() + 0.5, 0F, 0F);
+                
+                for(Player player : bsCustomBlock.getBSCustomBlockChunk().getPlayers()) {
+                    if (player == null) continue;
+                    if(player.getWorld() !=  bsCustomBlock.getBlock().getWorld()) continue;
+                    NMSUtil.sendSpawnEntityLivingPacket(player, this.entityArmorStand);
+                    NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
+                }
+            } catch (Exception e) {
+                if(BlockStudio.getPlugin().getLogLevel() >= 2)
+                    e.printStackTrace();
+            }
+        }
+    }
+    
+    
     public int getEntityID() {
         if (this.armorStand != null) {
             return this.armorStand.getEntityId();
@@ -67,10 +100,18 @@ public class BSArmorStand {
             this.armorStand.setHelmet(itemStack);
         }else{
             try {
-                for (Player player : bsCube.getBsObject().getPlayers()) {
-                    if (player == null) continue;
-                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
-                    sendHelmetEquipmentPacket(player, itemStack);
+                if(bsCube != null) {
+                    for (Player player : bsCube.getBsObject().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCube.getLocation().getWorld()) continue;
+                        sendHelmetEquipmentPacket(player, itemStack);
+                    }
+                }else{
+                    for (Player player : bsCustomBlock.getBSCustomBlockChunk().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCustomBlock.getBlock().getWorld()) continue;
+                        sendHelmetEquipmentPacket(player, itemStack);
+                    }
                 }
             } catch (Exception e) {
                 if(BlockStudio.getPlugin().getLogLevel() >= 2)
@@ -97,7 +138,11 @@ public class BSArmorStand {
                 if(BlockStudio.getPlugin().getLogLevel() >= 2)
                     e.printStackTrace();
             }
-            sendHelmetEquipmentPacket(player, bsCube.getHeadItemStack());
+            
+            if(bsCube != null)
+                sendHelmetEquipmentPacket(player, bsCube.getHeadItemStack());
+            else
+                sendHelmetEquipmentPacket(player, bsCustomBlock.getItemStack());
         }
     }
     
@@ -118,10 +163,18 @@ public class BSArmorStand {
         }else{
             try {
                 NMSUtil.setEntityPositionRotation(this.entityArmorStand, location.getX(), location.getY(), location.getZ(), 0F, 0F);
-                for(Player player : bsCube.getBsObject().getPlayers()){
-                    if(player == null) continue;
-                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
-                    NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
+                if(bsCube != null) {
+                    for (Player player : bsCube.getBsObject().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCube.getLocation().getWorld()) continue;
+                        NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
+                    }
+                }else{
+                    for (Player player : bsCustomBlock.getBSCustomBlockChunk().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCustomBlock.getBlock().getWorld()) continue;
+                        NMSUtil.sendEntityTeleportPacket(player, this.entityArmorStand);
+                    }
                 }
             } catch (Exception e) {
                 if(BlockStudio.getPlugin().getLogLevel() >= 2)
@@ -136,10 +189,18 @@ public class BSArmorStand {
         }else{
             try{
                 NMSUtil.setArmorStandHeadRotation(this.entityArmorStand, (float)Math.toDegrees(eulerAngle.getX()), (float)Math.toDegrees(eulerAngle.getY()), (float)Math.toDegrees(eulerAngle.getZ()));
-                for(Player player : bsCube.getBsObject().getPlayers()) {
-                    if (player == null) continue;
-                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
-                    NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
+                if(bsCube != null) {
+                    for (Player player : bsCube.getBsObject().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCube.getLocation().getWorld()) continue;
+                        NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
+                    }
+                }else{
+                    for (Player player : bsCustomBlock.getBSCustomBlockChunk().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCustomBlock.getBlock().getWorld()) continue;
+                        NMSUtil.sendEntityMetadataPacket(player, this.entityArmorStand);
+                    }
                 }
             } catch (Exception e) {
                 if(BlockStudio.getPlugin().getLogLevel() >= 2)
@@ -153,10 +214,18 @@ public class BSArmorStand {
             this.armorStand.remove();
         }else{
             try {
-                for (Player player : bsCube.getBsObject().getPlayers()) {
-                    if (player == null) continue;
-                    if(player.getWorld() !=  bsCube.getLocation().getWorld()) continue;
-                    sendDestroyPacket(player);
+                if(bsCube != null) {
+                    for (Player player : bsCube.getBsObject().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCube.getLocation().getWorld()) continue;
+                        sendDestroyPacket(player);
+                    }
+                }else{
+                    for (Player player : bsCustomBlock.getBSCustomBlockChunk().getPlayers()) {
+                        if (player == null) continue;
+                        if (player.getWorld() != bsCustomBlock.getBlock().getWorld()) continue;
+                        sendDestroyPacket(player);
+                    }
                 }
             } catch (Exception e) {
                 if(BlockStudio.getPlugin().getLogLevel() >= 2)

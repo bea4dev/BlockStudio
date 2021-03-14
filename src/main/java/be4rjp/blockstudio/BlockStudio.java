@@ -1,5 +1,6 @@
 package be4rjp.blockstudio;
 
+import be4rjp.blockstudio.api.BSCustomBlock;
 import be4rjp.blockstudio.api.BlockStudioAPI;
 import be4rjp.blockstudio.command.bsCommandExecutor;
 import be4rjp.blockstudio.data.DataStore;
@@ -8,6 +9,9 @@ import be4rjp.blockstudio.file.Config;
 import be4rjp.blockstudio.listener.EventListener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class BlockStudio extends JavaPlugin {
     
@@ -21,6 +25,7 @@ public final class BlockStudio extends JavaPlugin {
     
     private int LOG_LEVEL;
     private boolean IS_ENABLE_OBJECT_CLICK_EVENT;
+    private boolean IS_ENABLE_CUSTOM_BLOCK;
     
     @Override
     public void onEnable() {
@@ -33,11 +38,18 @@ public final class BlockStudio extends JavaPlugin {
         
         
         //起動時にインスタンス作成
-        this.api = new BlockStudioAPI(this, config.getConfig().getInt("default-view-distance"));
+        double objectViewDistance = config.getConfig().getDouble("default-view-distance");
+        double blockViewDistance = config.getConfig().getDouble("custom-block-view-distance");
+        this.api = new BlockStudioAPI(this, objectViewDistance, blockViewDistance);
         
         
         //Load all object data
         this.api.loadAllObjectData();
+        
+        
+        //Load and spawn custom blocks
+        if(IS_ENABLE_CUSTOM_BLOCK)
+            this.api.loadAndSpawnAllCustomBlocks();
         
         
         //Register listeners
@@ -74,9 +86,22 @@ public final class BlockStudio extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        
+        //Save config
+        api.getCustomBlockConfig().saveConfig();
+        api.getCustomBlockDataConfig().saveConfig();
+        
+        //Remove objects
         api.getObjectList().forEach(bsObject -> bsObject.remove(false));
         api.getObjectList().clear();
         api.getObjectMap().clear();
+    
+        //Remove custom blocks
+        List<BSCustomBlock> blockList = new ArrayList<>();
+        api.getBSCustomBlockChunkMap().values().forEach(bsCustomBlockChunk -> {
+            bsCustomBlockChunk.getBlockList().forEach(bsCustomBlock -> blockList.add(bsCustomBlock));
+        });
+        blockList.forEach(bsCustomBlock -> api.breakCustomBlock(bsCustomBlock.getBlock()));
     }
     
     
@@ -88,6 +113,7 @@ public final class BlockStudio extends JavaPlugin {
     
         LOG_LEVEL = config.getConfig().getInt("log-level");
         IS_ENABLE_OBJECT_CLICK_EVENT = config.getConfig().getBoolean("object-click-event");
+        IS_ENABLE_CUSTOM_BLOCK = config.getConfig().getBoolean("enable-custom-block");
     }
     
     
@@ -101,6 +127,9 @@ public final class BlockStudio extends JavaPlugin {
     
     
     public boolean isEnableObjectClickEvent(){return IS_ENABLE_OBJECT_CLICK_EVENT;}
+    
+    
+    public boolean isEnableCustomBlock() {return IS_ENABLE_CUSTOM_BLOCK;}
     
     
     public DataStore getDataStore() {return dataStore;}

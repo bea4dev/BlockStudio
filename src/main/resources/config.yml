@@ -6,4 +6,8 @@ default-task-period: 60
 
 log-level: 0
 
-object-click-event: true
+object-click-event: false
+
+enable-custom-block: false
+
+custom-block-view-distance: 100
