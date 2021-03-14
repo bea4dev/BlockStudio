@@ -44,7 +44,8 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
             api.getObjectList().forEach(bsObject -> bsObject.remove(false));
             api.getObjectList().clear();
             api.getObjectMap().clear();
-            api.spawnAllObjects();
+            if(BlockStudio.config.getConfig().getBoolean("spawn-objects"))
+                api.spawnAllObjects();
             
             api.loadAndSpawnAllCustomBlocks();
             
