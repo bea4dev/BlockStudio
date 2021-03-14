@@ -472,7 +472,8 @@ public class BlockStudioAPI {
             }
         });
     
-        bsCustomBlockChunk.getBlockList().removeIf(bsCustomBlock -> bsCustomBlock.getBlock() == block);
+        bsCustomBlockChunk.getBlockList().removeIf(bsCustomBlock ->
+                bsCustomBlock.getBlock().getX() == block.getX() && bsCustomBlock.getBlock().getY() == block.getY() && bsCustomBlock.getBlock().getZ() == block.getZ());
         
         List<String> blockList = customBlockConfig.getConfig().getStringList("custom-blocks");
         blockList.removeIf(line -> {
