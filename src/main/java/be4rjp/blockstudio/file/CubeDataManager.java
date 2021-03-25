@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CubeDataManager {
-    public static int version = 1;
+    public static int VERSION = 1;
     
     public static List<String> convertStringList(List<BSCube> bsCubeList){
         List<String> strings = new ArrayList<>();

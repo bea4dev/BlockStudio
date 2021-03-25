@@ -124,6 +124,7 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 List<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(((Player)sender).getWorld(), bsObject, objectData);
                 bsObject.setBSCubeList(bsCubeList);
                 bsObject.startTaskAsync(40);
+                bsObject.move();
                 
                 TestSpawnRunnable runnable = new TestSpawnRunnable(bsObject);
                 runnable.runTaskTimer(BlockStudio.getPlugin(), 0, 1);

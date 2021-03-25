@@ -1,12 +1,10 @@
 package be4rjp.blockstudio.file;
 
 
-import be4rjp.blockstudio.api.BSObject;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectData{
@@ -26,7 +24,7 @@ public class ObjectData{
         if(config.contains("version")){
             return config.getInt("version");
         }else{
-            return CubeDataManager.version;
+            return CubeDataManager.VERSION;
         }
     }
     
@@ -37,6 +35,7 @@ public class ObjectData{
     }
     
     public void setCubeDataList(List<String> cubeDataList){
+        config.set("version", CubeDataManager.VERSION);
         config.set("cube-data", cubeDataList);
     }
     
