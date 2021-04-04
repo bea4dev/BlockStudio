@@ -83,11 +83,13 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.59.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>datafixerupper</artifactId>
             <version>1.0.20</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
