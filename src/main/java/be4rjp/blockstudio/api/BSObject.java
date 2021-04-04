@@ -177,6 +177,8 @@ public class BSObject {
     
     public Location getBaseLocation(){return this.baseLocation;}
     
+    public BSObjectPlayerRunnable getBsObjectPlayerRunnable(){return this.bsObjectPlayerRunnable;}
+    
     
     /**
      * Specifies the location of the object.
@@ -275,6 +277,29 @@ public class BSObject {
             }
         }
     }
+    
+    
+    /**
+     * Add a player to hide the object.
+     * オブジェクトを非表示にするプレイヤーを追加します。
+     * @param name Player's name, not UUID.
+     */
+    public void addHidePlayer(String name){this.bsObjectPlayerRunnable.getHidePlayerList().add(name);}
+    
+    /**
+     * Remove a player to hide the object.
+     * オブジェクトを非表示にするプレイヤーを削除します。
+     * @param name Player's name, not UUID.
+     */
+    public void removeHidePlayer(String name){this.bsObjectPlayerRunnable.getHidePlayerList().remove(name);}
+    
+    /**
+     * Get the list of players to hide the object from.
+     * オブジェクトを非表示にするプレイヤーのリストを取得します。
+     * @return Player name list.
+     */
+    public List<String> getHidePlayerList(){return this.bsObjectPlayerRunnable.getHidePlayerList();}
+    
     
     public void setBSCubeList(List<BSCube> list){this.list = list;}
 }
