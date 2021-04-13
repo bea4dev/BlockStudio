@@ -9,6 +9,23 @@ import java.lang.reflect.Field;
 
 public class PacketHandler extends ChannelDuplexHandler{
     
+    private static Class<?> PacketPlayInUseEntity;
+    private static Field a;
+    
+    static {
+        try {
+            PacketPlayInUseEntity = NMSUtil.getNMSClass("PacketPlayInUseEntity");
+            
+            a = PacketPlayInUseEntity.getDeclaredField("a");
+            a.setAccessible(true);
+        }catch (Exception e){
+            if(BlockStudio.getPlugin().getLogLevel() >= 2){
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    
     private final Player player;
     
     public PacketHandler(Player player){
@@ -20,9 +37,6 @@ public class PacketHandler extends ChannelDuplexHandler{
         
         try{
             if(packet.getClass().getSimpleName().equalsIgnoreCase("PacketPlayInUseEntity")){
-                Class<?> PacketPlayInUseEntity = NMSUtil.getNMSClass("PacketPlayInUseEntity");
-                Field a = PacketPlayInUseEntity.getDeclaredField("a");
-                a.setAccessible(true);
                 int entityID = (Integer) a.get(packet);
                 ObjectClickPacketManager.checkAllObject(entityID, player);
             }

@@ -12,15 +12,37 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NMSUtil {
+    
+    //微妙にCPU負荷が小さくなるおまじないキャッシュ
+    private static Map<String, Class<?>> nmsClassMap = new HashMap<>();
+    private static Map<String, Class<?>> craftBukkitClassMap = new HashMap<>();
+    
     public static Class<?> getNMSClass(String nmsClassString) throws ClassNotFoundException {
-        String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
-        String name = "net.minecraft.server." + version + nmsClassString;
-        Class<?> nmsClass = Class.forName(name);
+        Class<?> nmsClass = nmsClassMap.get(nmsClassString);
+        
+        if(nmsClass == null){
+            String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
+            String name = "net.minecraft.server." + version + nmsClassString;
+            nmsClass = Class.forName(name);
+            nmsClassMap.put(nmsClassString, nmsClass);
+        }
+        
         return nmsClass;
+    }
+    
+    public static Class<?> getCraftBukkitClass(String className) throws ClassNotFoundException {
+        Class<?> craftBukkitClass = craftBukkitClassMap.get(className);
+        
+        if(craftBukkitClass == null){
+            String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
+            craftBukkitClass = Class.forName("org.bukkit.craftbukkit." + version + className);
+            craftBukkitClassMap.put(className, craftBukkitClass);
+        }
+        
+        return craftBukkitClass;
     }
     
     
@@ -197,8 +219,7 @@ public class NMSUtil {
             IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
         
         Class<?> packetClass = getNMSClass("PacketPlayOutEntityEquipment");
-        String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
-        Class<?> CraftItemStack = Class.forName("org.bukkit.craftbukkit." + version + "inventory.CraftItemStack");
+        Class<?> CraftItemStack = getCraftBukkitClass("inventory.CraftItemStack");
         Class<?> ItemStack = getNMSClass("ItemStack");
         Class<?> EnumItemSlot = getNMSClass("EnumItemSlot");
         

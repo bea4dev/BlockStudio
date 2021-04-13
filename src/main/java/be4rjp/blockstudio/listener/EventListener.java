@@ -142,7 +142,7 @@ public class EventListener implements Listener {
                 Channel channel = NMSUtil.getChannel(player);
         
                 channel.eventLoop().submit(() -> {
-                    channel.pipeline().remove(player.getName());
+                    channel.pipeline().remove("BlockStudioPacketInjector:" + player.getName());
                     return null;
                 });
             } catch (Exception e) {
