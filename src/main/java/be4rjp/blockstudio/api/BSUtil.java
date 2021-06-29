@@ -14,10 +14,12 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BSUtil {
-    public static List<BSCube> createBSCubeListFromBlocks(Location baseLocation, BSObject bsObject, List<Block> blocks){
-        List<BSCube> bsCubeList = new ArrayList<>();
+    public static Set<BSCube> createBSCubeListFromBlocks(Location baseLocation, BSObject bsObject, Set<Block> blocks){
+        Set<BSCube> bsCubeList = ConcurrentHashMap.newKeySet();
     
         for(Block block : blocks){
             if(block.getType() == Material.AIR || block.getType() == Material.STRUCTURE_VOID) continue;
@@ -32,7 +34,7 @@ public class BSUtil {
     }
     
     
-    public static List<String> createCubeDataListFromBlocks(Location baseLocation, List<Block> blocks){
+    public static List<String> createCubeDataListFromBlocks(Location baseLocation, Set<Block> blocks){
         List<String> bsCubeList = new ArrayList<>();
         
         for(Block block : blocks){
@@ -60,8 +62,8 @@ public class BSUtil {
     }
     
     
-    public static List<BSCube> createBSCubeListFromObjectData(World world, BSObject bsObject, ObjectData objectData){
-        List<BSCube> bsCubeList = new ArrayList<>();
+    public static Set<BSCube> createBSCubeListFromObjectData(World world, BSObject bsObject, ObjectData objectData){
+        Set<BSCube> bsCubeList = ConcurrentHashMap.newKeySet();
         
         for(String line : objectData.getCubeDataList()){
             

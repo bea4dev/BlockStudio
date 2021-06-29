@@ -6,11 +6,12 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CubeDataManager {
     public static int VERSION = 1;
     
-    public static List<String> convertStringList(List<BSCube> bsCubeList){
+    public static List<String> convertStringList(Set<BSCube> bsCubeList){
         List<String> strings = new ArrayList<>();
         
         for(BSCube bsCube : bsCubeList){

@@ -1,11 +1,10 @@
 package be4rjp.blockstudio.api;
 
-import be4rjp.blockstudio.BlockStudio;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
+import java.util.Set;
 
 public class BSCustomBlockPlayerRunnable extends BukkitRunnable {
     
@@ -18,7 +17,7 @@ public class BSCustomBlockPlayerRunnable extends BukkitRunnable {
     @Override
     public void run() {
         try {
-            List<Player> playerList = bsCustomBlockChunk.getPlayers();
+            Set<Player> playerList = bsCustomBlockChunk.getPlayers();
         
             playerList.removeIf(player -> !player.isOnline());
         

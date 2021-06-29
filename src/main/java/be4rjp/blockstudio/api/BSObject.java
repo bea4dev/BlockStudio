@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BSObject {
     private final String name;
@@ -16,8 +16,8 @@ public class BSObject {
     private final boolean useBukkitArmorStand;
     private double viewDistance;
     private Location baseLocation;
-    private List<BSCube> list = new ArrayList<>();
-    private List<Player> players = new ArrayList<>();
+    private Set<BSCube> list = ConcurrentHashMap.newKeySet();
+    private Set<Player> players = ConcurrentHashMap.newKeySet();
     private Vector x = new Vector(1, 0, 0);
     private Vector y = new Vector(0, 1, 0);
     private Vector z = new Vector(0, 0, 1);
@@ -192,9 +192,9 @@ public class BSObject {
     }
     
     
-    public List<BSCube> getBSCubeList(){return this.list;}
+    public Set<BSCube> getBSCubeList(){return this.list;}
     
-    public List<Player> getPlayers() {return players;}
+    public Set<Player> getPlayers() {return players;}
     
     public double getBlockSize(){return blockSize;}
     
@@ -298,8 +298,8 @@ public class BSObject {
      * オブジェクトを非表示にするプレイヤーのリストを取得します。
      * @return Player name list.
      */
-    public List<String> getHidePlayerList(){return this.bsObjectPlayerRunnable.getHidePlayerList();}
+    public Set<String> getHidePlayerList(){return this.bsObjectPlayerRunnable.getHidePlayerList();}
     
     
-    public void setBSCubeList(List<BSCube> list){this.list = list;}
+    public void setBSCubeList(Set<BSCube> list){this.list = list;}
 }

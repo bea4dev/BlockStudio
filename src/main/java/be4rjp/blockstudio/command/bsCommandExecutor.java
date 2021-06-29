@@ -3,7 +3,6 @@ package be4rjp.blockstudio.command;
 import be4rjp.blockstudio.BlockStudio;
 import be4rjp.blockstudio.api.*;
 import be4rjp.blockstudio.data.PlayerData;
-import be4rjp.blockstudio.file.Config;
 import be4rjp.blockstudio.file.ObjectConfig;
 import be4rjp.blockstudio.file.ObjectData;
 import org.bukkit.ChatColor;
@@ -15,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class bsCommandExecutor implements CommandExecutor, TabExecutor {
     
@@ -121,7 +121,7 @@ public class bsCommandExecutor implements CommandExecutor, TabExecutor {
                 }
                 
                 BSObject bsObject = new BSObject(api, "test", ((Player)sender).getLocation(), api.getDefaultViewDistance(), false);
-                List<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(((Player)sender).getWorld(), bsObject, objectData);
+                Set<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(((Player)sender).getWorld(), bsObject, objectData);
                 bsObject.setBSCubeList(bsCubeList);
                 bsObject.startTaskAsync(40);
                 bsObject.move();

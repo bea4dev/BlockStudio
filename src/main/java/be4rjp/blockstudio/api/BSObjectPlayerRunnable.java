@@ -4,14 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BSObjectPlayerRunnable extends BukkitRunnable {
     private final BSObject bsObject;
     
     
-    private final List<String> hideList = new ArrayList<>();
+    private final Set<String> hideList = ConcurrentHashMap.newKeySet();
     
     /**
      * Add a player to hide the object.
@@ -31,7 +31,7 @@ public class BSObjectPlayerRunnable extends BukkitRunnable {
         hideList.remove(name);
     }
     
-    public List<String> getHidePlayerList(){return this.hideList;}
+    public Set<String> getHidePlayerList(){return this.hideList;}
     
     
     public BSObjectPlayerRunnable(BSObject bsObject){
@@ -41,7 +41,7 @@ public class BSObjectPlayerRunnable extends BukkitRunnable {
     @Override
     public void run() {
         try {
-            List<Player> playerList = bsObject.getPlayers();
+            Set<Player> playerList = bsObject.getPlayers();
             
             playerList.removeIf(player -> !player.isOnline());
             

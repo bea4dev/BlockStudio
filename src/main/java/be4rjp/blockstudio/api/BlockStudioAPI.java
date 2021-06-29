@@ -13,20 +13,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BlockStudioAPI {
     
     private final JavaPlugin plugin;
     private final Map<String, BSObject> objectMap;
-    private final List<BSObject> objectList;
+    private final Set<BSObject> objectList;
     private final Map<String, ObjectData> objectDataMap;
-    private final List<ObjectData> objectDataList;
+    private final Set<ObjectData> objectDataList;
     private final Map<Chunk, BSCustomBlockChunk> bsCustomBlockChunkMap;
     
     private double defaultViewDistance;
     private double customBlockViewDistance;
     
-    private List<ItemStack> blockItemList;
+    private Set<ItemStack> blockItemList;
     private Map<String, ItemStack> blockItemNameMap;
     private Map<ItemStack, String> nameBlockItemMap;
     
@@ -44,15 +45,15 @@ public class BlockStudioAPI {
         this.defaultViewDistance = defaultViewDistance;
         this.customBlockViewDistance = customBlockViewDistance;
         
-        this.objectMap = new HashMap<>();
-        this.objectList = new ArrayList<>();
-        this.objectDataMap = new HashMap<>();
-        this.objectDataList = new ArrayList<>();
+        this.objectMap = new ConcurrentHashMap<>();
+        this.objectList = ConcurrentHashMap.newKeySet();
+        this.objectDataMap = new ConcurrentHashMap<>();
+        this.objectDataList = ConcurrentHashMap.newKeySet();
         this.bsCustomBlockChunkMap = new HashMap<>();
     
-        this.blockItemList = new ArrayList<>();
-        this.blockItemNameMap = new HashMap<>();
-        this.nameBlockItemMap = new HashMap<>();
+        this.blockItemList = ConcurrentHashMap.newKeySet();
+        this.blockItemNameMap = new ConcurrentHashMap<>();
+        this.nameBlockItemMap = new ConcurrentHashMap<>();
     
         this.customBlockDataConfig = new Config(plugin, "CustomBlock/custom-block-data.yml");
         this.customBlockDataConfig.saveDefaultConfig();
@@ -68,9 +69,9 @@ public class BlockStudioAPI {
     
     public double getCustomBlockViewDistance(){return customBlockViewDistance;}
     
-    public List<BSObject> getObjectList() {return objectList;}
+    public Set<BSObject> getObjectList() {return objectList;}
     
-    public List<ObjectData> getObjectDataList() {return objectDataList;}
+    public Set<ObjectData> getObjectDataList() {return objectDataList;}
     
     public Map<String, BSObject> getObjectMap() {return objectMap;}
     
@@ -84,7 +85,7 @@ public class BlockStudioAPI {
     
     public Config getCustomBlockDataConfig(){return customBlockDataConfig;}
     
-    public List<ItemStack> getBlockItemList(){return blockItemList;}
+    public Set<ItemStack> getBlockItemList(){return blockItemList;}
     
     public Map<ItemStack, String> getNameBlockItemMap(){return nameBlockItemMap;}
     
@@ -180,9 +181,9 @@ public class BlockStudioAPI {
      *                            you will not be able to move the object asynchronously.
      * @return BSObject Created object.
      */
-    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, List<Block> blocks, double viewDistance, boolean useBukkitArmorStand){
+    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, Set<Block> blocks, double viewDistance, boolean useBukkitArmorStand){
         BSObject bsObject = new BSObject(this, objectName, baseLocation, viewDistance, useBukkitArmorStand);
-        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromBlocks(baseLocation, bsObject, blocks);
+        Set<BSCube> bsCubeList = BSUtil.createBSCubeListFromBlocks(baseLocation, bsObject, blocks);
         bsObject.setBSCubeList(bsCubeList);
         
         objectList.add(bsObject);
@@ -203,7 +204,7 @@ public class BlockStudioAPI {
      *                            you will not be able to move the object asynchronously.
      * @return BSObject Created object.
      */
-    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, List<Block> blocks, boolean useBukkitArmorStand){
+    public BSObject createObjectFromBlocks(String objectName, Location baseLocation, Set<Block> blocks, boolean useBukkitArmorStand){
         
         return createObjectFromBlocks(objectName, baseLocation, blocks, defaultViewDistance, useBukkitArmorStand);
     }
@@ -225,8 +226,8 @@ public class BlockStudioAPI {
     public BSObject createObjectFromRegion(String objectName, Location baseLocation, Location firstLocation,
                                            Location secondLocation, double viewDistance, boolean useBukkitArmorStand){
         BSObject bsObject = new BSObject(this, objectName, baseLocation, viewDistance, useBukkitArmorStand);
-        List<Block> blocks = new RegionBlocks(firstLocation, secondLocation).getBlocks();
-        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromBlocks(baseLocation, bsObject, blocks);
+        Set<Block> blocks = new RegionBlocks(firstLocation, secondLocation).getBlocks();
+        Set<BSCube> bsCubeList = BSUtil.createBSCubeListFromBlocks(baseLocation, bsObject, blocks);
         bsObject.setBSCubeList(bsCubeList);
         
         objectList.add(bsObject);
@@ -270,7 +271,7 @@ public class BlockStudioAPI {
                                                ObjectData objectData, double viewDistance, boolean useBukkitArmorStand){
     
         BSObject bsObject = new BSObject(this, objectName, baseLocation, viewDistance, useBukkitArmorStand);
-        List<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(baseLocation.getWorld(), bsObject, objectData);
+        Set<BSCube> bsCubeList = BSUtil.createBSCubeListFromObjectData(baseLocation.getWorld(), bsObject, objectData);
         bsObject.setBSCubeList(bsCubeList);
     
         objectList.add(bsObject);
@@ -397,7 +398,7 @@ public class BlockStudioAPI {
         ObjectData objectData = new ObjectData(dataName);
         objectData.loadFile();
     
-        List<Block> blocks = new RegionBlocks(firstLocation, secondLocation).getBlocks();
+        Set<Block> blocks = new RegionBlocks(firstLocation, secondLocation).getBlocks();
         
         objectData.setCubeDataList(BSUtil.createCubeDataListFromBlocks(baseLocation, blocks));
         
@@ -416,7 +417,7 @@ public class BlockStudioAPI {
      * @param blocks Block list to convert ObjectData.
      * @return ObjectData Created object data.
      */
-    public ObjectData createObjectDataFromBlocks(String dataName, Location baseLocation, List<Block> blocks){
+    public ObjectData createObjectDataFromBlocks(String dataName, Location baseLocation, Set<Block> blocks){
         ObjectData objectData = new ObjectData(dataName);
         objectData.loadFile();
         
