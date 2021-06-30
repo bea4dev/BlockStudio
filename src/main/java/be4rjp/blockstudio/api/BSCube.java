@@ -93,4 +93,13 @@ public class BSCube {
     public EulerAngle getBaseEulerAngle() {return baseEulerAngle;}
     
     public World getWorld() {return world;}
+
+    /**
+     * アイテムを変更する
+     * @param itemStack
+     */
+    public void setItem(ItemStack itemStack){
+        this.headItemStack = itemStack;
+        this.armorStand.setHelmet(itemStack);
+    }
 }
